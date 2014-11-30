@@ -28,6 +28,6 @@ void IDSMove::add_to_queue()
 bool IDSMove::is_legal(int x, int y)
 {
     if (current_state_obj.get_steps() > depth) return false;
-    if (x >= 0 & x <=2 & y >=0 & y <=2) return true;
+    if (x >= 0 && x <=2 && y >=0 && y <=2) return true;
     else return false;
 }
