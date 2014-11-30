@@ -46,7 +46,7 @@ int main(int argc, const char * argv[])
 {
 	
     //read_default_state();
-	int n = 2;
+	int n = 5;
 
 	int *statistics_bfs, *statistics_ids, *statistics_astar;
 	statistics_bfs = new int[n];
@@ -63,13 +63,13 @@ int main(int argc, const char * argv[])
 		cout << "Goal state is " << ArrayToString(State::goal_state) << endl << endl;
 
 		cout << "[*] Running an Uninformed breadth-first search..." << endl;
-		update_statistics(run_uninformed_bfs(),statistics_bfs[n]);
+		update_statistics(run_uninformed_bfs(),statistics_bfs[idx]);
 
 		cout << "[*] Running an Iterative Deepening search..." << endl;
-		update_statistics(run_interactive_deepening_search(),statistics_ids[n]);
+		update_statistics(run_interactive_deepening_search(),statistics_ids[idx]);
 
 		cout << "[*] Running A* with Manhattan distance as heuristic..." << endl;
-		update_statistics(run_a_star_search(A_MANHATTAN_MODE),statistics_astar[n]);
+		update_statistics(run_a_star_search(A_MANHATTAN_MODE),statistics_astar[idx]);
 
 		system("CLS");
 	}
@@ -80,35 +80,35 @@ int main(int argc, const char * argv[])
 
 	for(int idx = 0; idx < n; idx++)
 	{
-		if(statistics_bfs[n] != 0)  
+		if(statistics_bfs[idx] != 0)  
 		{
-			bfs_total += statistics_bfs[n];
+			bfs_total += statistics_bfs[idx];
 			bfs_counter++;
 		}
 
-		if(statistics_ids[n] != 0)
+		if(statistics_ids[idx] != 0)
 		{
-			ids_total += statistics_ids[n];
+			ids_total += statistics_ids[idx];
 			ids_counter++;
 		}
 
-		if(statistics_astar[n] != 0)
+		if(statistics_astar[idx] != 0)
 		{
-			astar_total += statistics_astar[n];
+			astar_total += statistics_astar[idx];
 			astar_counter++;
 		}
 	}
 	
 	cout << "RESULTS" << endl << endl;
 
-	cout << "BFS Average Steps: " << bfs_total / bfs_counter << endl;
-	cout << "BFS solving ratio: " << bfs_counter / n << "% (" << bfs_counter<<" of " << n << ")" << endl << endl;
+	cout << "BFS Average Steps: " << bfs_total / (bfs_counter + 0.1) << endl;
+	cout << "BFS solving ratio: " << (float)bfs_counter / n * 100 << "% (" << bfs_counter <<" of " << n << ")" << endl << endl;
 
-	cout << "IDS Average Steps: " << ids_total / ids_counter << endl;
-	cout << "IDS solving ratio: " << ids_counter / n  << "% (" << ids_counter<<" of " << n << ")" << endl << endl;
+	cout << "IDS Average Steps: " << ids_total / (ids_counter + 0.1) << endl;
+	cout << "IDS solving ratio: " << (float)ids_counter / n * 100 << "% (" << ids_counter <<" of " << n << ")" << endl << endl;
 
-	cout << "AStar Average Steps: " << astar_total / astar_counter << endl;
-	cout << "Astar solving ratio: " << astar_counter / n << "% ("<<astar_counter<<" of " << n << ")" << endl << endl;
+	cout << "AStar Average Steps: " << astar_total / (astar_counter + 0.1) << endl;
+	cout << "Astar solving ratio: " << (float)astar_counter / n * 100 << "% (" << astar_counter <<" of " << n << ")" << endl << endl;
 
 	system("PAUSE");
     return 0;
@@ -201,7 +201,7 @@ int run_interactive_deepening_search()
 {
 
     int depth = 1;
-    while (depth < 25)
+    while (depth < 49)
 	{
         State init_state_object = State(init_state);
         state_stack.push(init_state_object);
