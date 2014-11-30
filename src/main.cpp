@@ -138,7 +138,7 @@ int run_interactive_deepening_search()
 {
 
     int depth = 1;
-    while (depth < 9)
+    while (true)
 	{
         State init_state_object = State(init_state);
         state_stack.push(init_state_object);
