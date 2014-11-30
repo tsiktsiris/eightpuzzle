@@ -11,13 +11,18 @@
 #include <array>
 #include <stack> 
 #include <vector>
+#include <time.h>
+#include <cstdlib>      // std::rand, std::srand
+#include <algorithm>
 #include "State.h"
+
 
 using namespace std;
 
 //Define functions
 string ArrayToString(int arr[][3]);
 void read_default_state();
+void read_random_state();
 int read_search_mode();
 int run_search(int);
 int run_uninformed_bfs();
@@ -39,8 +44,9 @@ priority_queue<State, std::vector<State>, GreaterThanByCost > state_priority_que
 
 int main(int argc, const char * argv[]) 
 {
-    read_default_state();
-	int n = 1;
+	
+    //read_default_state();
+	int n = 2;
 
 	int *statistics_bfs, *statistics_ids, *statistics_astar;
 	statistics_bfs = new int[n];
@@ -50,6 +56,8 @@ int main(int argc, const char * argv[])
 	for(int idx = 0; idx < n; idx++)
 	{
 		cout << "Running case " << idx + 1 << " of " << n <<endl<<endl;
+
+		read_random_state();
 
 		cout << "Default state is " << ArrayToString(init_state) << endl;
 		cout << "Goal state is " << ArrayToString(State::goal_state) << endl << endl;
@@ -61,8 +69,46 @@ int main(int argc, const char * argv[])
 		update_statistics(run_interactive_deepening_search(),statistics_ids[n]);
 
 		cout << "[*] Running A* with Manhattan distance as heuristic..." << endl;
-		update_statistics(run_a_star_search(A_MANHATTAN_MODE),statistics_ids[n]);
+		update_statistics(run_a_star_search(A_MANHATTAN_MODE),statistics_astar[n]);
+
+		system("CLS");
 	}
+
+	int bfs_total = 0, bfs_counter = 0;
+	int ids_total = 0, ids_counter = 0;
+	int astar_total = 0, astar_counter = 0;
+
+	for(int idx = 0; idx < n; idx++)
+	{
+		if(statistics_bfs[n] != 0)  
+		{
+			bfs_total += statistics_bfs[n];
+			bfs_counter++;
+		}
+
+		if(statistics_ids[n] != 0)
+		{
+			ids_total += statistics_ids[n];
+			ids_counter++;
+		}
+
+		if(statistics_astar[n] != 0)
+		{
+			astar_total += statistics_astar[n];
+			astar_counter++;
+		}
+	}
+	
+	cout << "RESULTS" << endl << endl;
+
+	cout << "BFS Average Steps: " << bfs_total / bfs_counter << endl;
+	cout << "BFS solving ratio: " << bfs_counter / n << "% (" << bfs_counter<<" of " << n << ")" << endl << endl;
+
+	cout << "IDS Average Steps: " << ids_total / ids_counter << endl;
+	cout << "IDS solving ratio: " << ids_counter / n  << "% (" << ids_counter<<" of " << n << ")" << endl << endl;
+
+	cout << "AStar Average Steps: " << astar_total / astar_counter << endl;
+	cout << "Astar solving ratio: " << astar_counter / n << "% ("<<astar_counter<<" of " << n << ")" << endl << endl;
 
 	system("PAUSE");
     return 0;
@@ -98,7 +144,24 @@ string ArrayToString(int arr[][3])
 
 void read_random_state()
 {
-	//TODO: Generate a random state here
+	std::srand ( unsigned ( time(0) ) );
+	std::vector<int> myvector;
+
+	// set some values:
+	for (int i=0; i<=8; ++i) myvector.push_back(i); // 1 2 3 4 5 6 7 8 9
+
+	// using built-in random generator:
+	std::random_shuffle ( myvector.begin(), myvector.end() );
+
+	std::vector<int>::iterator it = myvector.begin();
+
+		for (int i=0; i<3; i++)
+			for (int j=0; j<3; j++)
+			{
+				init_state[i][j] = *it;
+				*it++;
+				DEBUG_PRINT(init_state[i][j]);
+			}
 }
 
 void read_default_state()
@@ -138,7 +201,7 @@ int run_interactive_deepening_search()
 {
 
     int depth = 1;
-    while (true)
+    while (depth < 25)
 	{
         State init_state_object = State(init_state);
         state_stack.push(init_state_object);
